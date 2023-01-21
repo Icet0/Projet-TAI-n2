@@ -1,0 +1,12 @@
+argparse
+google-api-python-client
+dailymotion
+flask
+bson
+flask-bcrypt
+certifi
+pyjwt
+pymongo
+dailymotion
+flask_sslify
+pynacl
