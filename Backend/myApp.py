@@ -1,5 +1,6 @@
 import base64
 import os
+from . import app
 
 import pandas as pd
 import numpy as np
@@ -211,7 +212,7 @@ print("data set: ",df.shape)
 
 
 
-app = Flask(__name__)
+# app = Flask(__name__)
 CORS(app, resources={r"/prediction": {"origins": "*"}})
 
 # cors = CORS(app, resources={r"/prediction": {"origins": "http://localhost:63701"}})
