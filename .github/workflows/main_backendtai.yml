@@ -63,4 +63,6 @@ jobs:
           username: ${{ secrets.AzureAppService_ContainerUsername_56735f6867064dbc8c7e7dea43543aa0 }}
           password: ${{ secrets.AzureAppService_ContainerPassword_73d1457239044728867cbee2430cd735 }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          entrypoint: 'flask run --script==Backend/testVggFace_perso.py --host=0.0.0.0 --port=80'
+
 
