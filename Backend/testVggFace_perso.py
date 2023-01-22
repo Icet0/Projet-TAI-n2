@@ -29,15 +29,15 @@ from tensorflow.keras.preprocessing import image as imageKeras
 #-----------------------
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
-def preprocess_image(image_path):
-    img = load_img(image_path, target_size=(224, 224))
-    img = img_to_array(img)
-    img = np.expand_dims(img, axis=0)
+# def preprocess_image(image_path):
+#     img = load_img(image_path, target_size=(224, 224))
+#     img = img_to_array(img)
+#     img = np.expand_dims(img, axis=0)
     
-    #preprocess_input normalizes input in scale of [-1, +1]. You must apply same normalization in prediction.
-    #Ref: https://github.com/keras-team/keras-applications/blob/master/keras_applications/imagenet_utils.py (Line 45)
-    img = preprocess_input(img)
-    return img
+#     #preprocess_input normalizes input in scale of [-1, +1]. You must apply same normalization in prediction.
+#     #Ref: https://github.com/keras-team/keras-applications/blob/master/keras_applications/imagenet_utils.py (Line 45)
+#     img = preprocess_input(img)
+#     return img
 
 def loadVggFaceModel():
 	model = Sequential()
