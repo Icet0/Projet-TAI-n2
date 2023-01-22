@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/9e0e233c-1fe7-4b6c-ac7b-ee115d9d7354/AppServices/subscriptions/9e0e233c-1fe7-4b6c-ac7b-ee115d9d7354/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/ProjectTai",
+    "appService.deploySubpath": "."
+}

@@ -11,8 +11,8 @@ from flask_cors import CORS
 import time
 
 from PIL import Image
-import mtcnn
-from mtcnn.mtcnn import MTCNN
+# import mtcnn
+from mtcnn import MTCNN
 import cv2
 import matplotlib.pyplot as plt
 import tensorflow as tf
@@ -292,7 +292,7 @@ def index():
 		imageView = Image.open("imdb_data_set/%s" % full_path)
 
 		# Affichez l'image
-		imageView.show()
+		# imageView.show()
 		encoded_string = None
 		with open("imdb_data_set/%s" % full_path, "rb") as image_file:
 			image_bytes = image_file.read()
