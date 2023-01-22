@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v1
       with:
         registry: https://mcr.microsoft.com/
-        username: ${{ secrets.AzureAppService_ContainerUsername_10c60ff2f4b643c2b3caa84f16701837 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_ae54743ced0e4d0d81496e45d0fa5422 }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_56735f6867064dbc8c7e7dea43543aa0 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_73d1457239044728867cbee2430cd735 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_10c60ff2f4b643c2b3caa84f16701837 }}/appsvc/staticsite:${{ github.sha }}
+        tags: mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_56735f6867064dbc8c7e7dea43543aa0 }}/appsvc/staticsite:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'BackendTai'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_c3f9edb2d6eb4d75a7a6a36c0ef76952 }}
-        images: 'mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_10c60ff2f4b643c2b3caa84f16701837 }}/appsvc/staticsite:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_7219f7d23e5f4beb844ef3e081653800 }}
+        images: 'mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_56735f6867064dbc8c7e7dea43543aa0 }}/appsvc/staticsite:${{ github.sha }}'
