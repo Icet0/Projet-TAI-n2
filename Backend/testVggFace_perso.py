@@ -216,6 +216,11 @@ CORS(app, resources={r"/prediction": {"origins": "*"}})
 
 # cors = CORS(app, resources={r"/prediction": {"origins": "http://localhost:63701"}})
 
+@app.route('/', methods=["POST", "GET"])
+def hello():
+	return "Hello World, Le flask est up !"
+	
+	
 @app.route('/prediction', methods=["POST", "GET"])
 def index():
 	print("request received")
