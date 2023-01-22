@@ -29,15 +29,6 @@ from tensorflow.keras.preprocessing import image as imageKeras
 #-----------------------
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
-# def preprocess_image(image_path):
-#     img = load_img(image_path, target_size=(224, 224))
-#     img = img_to_array(img)
-#     img = np.expand_dims(img, axis=0)
-    
-#     #preprocess_input normalizes input in scale of [-1, +1]. You must apply same normalization in prediction.
-#     #Ref: https://github.com/keras-team/keras-applications/blob/master/keras_applications/imagenet_utils.py (Line 45)
-#     img = preprocess_input(img)
-#     return img
 
 def loadVggFaceModel():
 	model = Sequential()
@@ -220,21 +211,31 @@ CORS(app, resources={r"/prediction": {"origins": "*"}})
 def hello():
 	return "Hello World, Le flask est up !"
 	
-	
+#Résumé de la fonction ci dessous fait par ChatGPT (en lui passant le code source de la fonction)
+#Cette fonction prend en entrée une image encodée en base64 et renvoie un tableau de 128 valeurs représentant la face de la personne sur l'image
+
+# This is a Flask application which receives a POST or GET request from the client containing an image path or image encoded in base64 format.
+# The image is then decoded and loaded using OpenCV. 
+# The MTCNN library is used to detect the face in the image and crop it. 
+# Then the face is resized to 224x224 and passed through a pre-trained model to get the face embeddings. 
+# After that, the embeddings are compared with the embeddings of celebrities in a pre-built dataframe using cosine similarity. 
+# The celebrity with the lowest cosine similarity score is considered as the celebrity that the image most closely resembles. 
+# The name and similarity score of the celebrity are returned to the client.
+
+
 @app.route('/prediction', methods=["POST", "GET"])
 def index():
 	print("request received")
  
+ # First check if it's in the form data, otherwise check if it's in the json data
 	img_path = request.form.get("path")
 	if(img_path == None):
 		img_path = request.json.get("path")
-	# img_path = "img1.jpg"
 
-	# print("Img_path",img_path)
 	try:
 		#----------------------------------------------
 		#load image
-		# my_image = cv2.imread(img_path)
+		# Decode the image from base64 encoding
 		decoded_image = base64.b64decode(img_path)
 		# Create an image object from the decoded image bytes
 		nparr = np.frombuffer(decoded_image, np.uint8) #nparr = np.fromstring(decoded_image, np.uint8)
@@ -242,20 +243,22 @@ def index():
   
 		print(my_image.shape)
 		print("img",my_image)
+		# Detect faces in the image using MTCNN library
 		detector = MTCNN()
 		# set face extraction parameters
 		border_rel = 0 # increase or decrease zoom on image
 		detections = detector.detect_faces(my_image)
 		x1, y1, width, height = detections[0]['box']
+		# Crop the detected face from the image
 		dw = round(width * border_rel)
 		dh = round(height * border_rel)
 		x2, y2 = x1 + width + dw, y1 + height + dh
 		face = my_image[y1:y2, x1:x2]
 
-	
+		#Resize the face to 224x224
 		detected_face = cv2.resize(face, (224, 224)) #resize to 224x224
 		cv2.imwrite("cropped_face.jpg", detected_face)
-
+		# Normalize the image pixels and pass it through the pre-trained model
 		img_pixels = imageKeras.img_to_array(detected_face)
 		img_pixels = np.expand_dims(img_pixels, axis = 0)
 		#normalize in scale of [-1, +1]
@@ -274,8 +277,10 @@ def index():
 			except:
 				return 10 #assign a large value. similar faces will have small value.
 
+		# Compare the face embeddings with the embeddings of celebrities in the dataframe
 		df['similarity'] = df['face_vector_raw'].apply(findCosineSimilarity)
 		#look-alike celebrity
+  
 		print(df['similarity'].head())
 		min_index = df[['similarity']].idxmin()[0]
 		instance = df.loc[min_index]
@@ -285,8 +290,8 @@ def index():
 		similarity = instance['similarity']
 		similarity = (1 - similarity)*100
 
-		#print(name," (",similarity,"%)")
 
+		# If the similarity score is greater than 50, read the celebrity image and resize it
 		if similarity > 50:
 			full_path = instance['full_path'][0]
 			celebrity_img = cv2.imread("imdb_data_set/%s" % full_path)
