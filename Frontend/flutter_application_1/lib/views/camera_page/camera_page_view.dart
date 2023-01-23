@@ -128,19 +128,6 @@ class _CameraPageState extends State<CameraPage> {
               // _detectFaces(imageInput);
             });
 
-            // Sauvegarder l'image dans le répertoire temporaire
-            // path2.saveTo("/images/image.jpg");
-            // dispose();
-
-            // Afficher la photo dans une nouvelle fenêtre
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) =>
-            //         DisplayPictureScreen(imagePath: path2.path),
-            //   ),
-            // );
-
             //REQUEST
 
             var response;
@@ -179,16 +166,12 @@ class _CameraPageState extends State<CameraPage> {
                 var similarity = data["data"]["similarity"];
                 var name = data["data"]["nom"];
                 var full_path = data["data"]["image"];
-                // print(
-                //     "status: $status, similarity: $similarity, name: $name, full_path: $full_path");
                 _imageBytes = base64Decode(full_path);
                 _image = _imageBytes;
                 setState(() {
                   // _image == null;
                   _myName = name;
                 });
-
-                // _image = Image.memory(_imageBytes!) as File?;
               } else {
                 var data = jsonDecode(response.body);
                 var status = data["status"];

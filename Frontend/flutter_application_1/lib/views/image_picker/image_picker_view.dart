@@ -44,7 +44,7 @@ class _ImagePickerViewState extends State<ImagePickerView> {
         var f = await image.readAsBytes();
         setState(() {
           _imageBytes = f;
-          _image = File('a').readAsBytesSync();
+          _image = f;
           _imageUrl = _image;
         });
       } else {
