@@ -20,7 +20,7 @@ class _CameraPageState extends State<CameraPage> {
   late Future<void> _initializeControllerFuture;
 
   bool _isLoading = false;
-  File? _image;
+  Uint8List? _image;
   String? _myName;
   Uint8List? _imageBytes = Uint8List(8);
   List<int>? imageBytes;
@@ -105,7 +105,7 @@ class _CameraPageState extends State<CameraPage> {
                         : Expanded(
                             child: kIsWeb
                                 ? Image.memory(_imageBytes!)
-                                : Image.file(_image!),
+                                : Image.memory(_image!),
                           ),
                 _myName != null
                     ? Text("Vous ressemblez à $_myName")
@@ -121,7 +121,7 @@ class _CameraPageState extends State<CameraPage> {
             await _initializeControllerFuture;
             // Prendre une photo avec la caméra et récupérer le chemin du fichier de l'image
             XFile path2 = await _cameraController.takePicture();
-            _image = File(path2.path);
+            _image = File(path2.path).readAsBytesSync();
             // final imageInput = InputImage.fromFile(_image!);
             setState(() {
               _isLoading = true;
@@ -147,9 +147,16 @@ class _CameraPageState extends State<CameraPage> {
             try {
               var headers = {
                 "Content-type": "application/json",
-                "Referer": "http://127.0.0.1:5000",
+                "Referer": kIsWeb
+                    ? "http://127.0.0.1:5000"
+                    : "https://376c-93-29-103-44.eu.ngrok.io",
               };
-              var url = Uri.http("127.0.0.1:5000", "/prediction");
+              var url;
+              if (kIsWeb) {
+                url = Uri.http("127.0.0.1:5000", "/prediction");
+              } else {
+                url = Uri.https("376c-93-29-103-44.eu.ngrok.io", "/prediction");
+              }
               print("url: $url");
               // response = await http.post(url, headers: headers, body: json);
               // _imageBytes = await _image?.readAsBytes();
@@ -175,7 +182,7 @@ class _CameraPageState extends State<CameraPage> {
                 // print(
                 //     "status: $status, similarity: $similarity, name: $name, full_path: $full_path");
                 _imageBytes = base64Decode(full_path);
-                _image = File.fromRawPath(_imageBytes!);
+                _image = _imageBytes;
                 setState(() {
                   // _image == null;
                   _myName = name;

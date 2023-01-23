@@ -13,11 +13,11 @@ class ImagePickerView extends StatefulWidget {
 }
 
 class _ImagePickerViewState extends State<ImagePickerView> {
-  File? _image;
+  Uint8List? _image;
   Uint8List? _imageBytes = Uint8List(8);
 
   bool _isLoading = false;
-  File? _imageUrl;
+  Uint8List? _imageUrl;
   late List<int> imageBytes;
   String? _myName;
 
@@ -31,7 +31,7 @@ class _ImagePickerViewState extends State<ImagePickerView> {
       if (image != null) {
         var selected = File(image.path);
         setState(() {
-          _image = File(image.path);
+          _image = File(image.path).readAsBytesSync();
           _imageUrl = _image;
         });
       } else {
@@ -44,7 +44,7 @@ class _ImagePickerViewState extends State<ImagePickerView> {
         var f = await image.readAsBytes();
         setState(() {
           _imageBytes = f;
-          _image = File('a');
+          _image = File('a').readAsBytesSync();
           _imageUrl = _image;
         });
       } else {
@@ -63,15 +63,22 @@ class _ImagePickerViewState extends State<ImagePickerView> {
     try {
       var headers = {
         "Content-type": "application/json",
-        "Referer": "http://127.0.0.1:5000",
+        "Referer": kIsWeb
+            ? "http://127.0.0.1:5000"
+            : "https://376c-93-29-103-44.eu.ngrok.io",
       };
-      var url = Uri.http("127.0.0.1:5000", "/prediction");
+      var url;
+      if (kIsWeb) {
+        url = Uri.http("127.0.0.1:5000", "/prediction");
+      } else {
+        url = Uri.https("376c-93-29-103-44.eu.ngrok.io", "/prediction");
+      }
       print("url: $url");
       // response = await http.post(url, headers: headers, body: json);
 
       if (!kIsWeb) {
         var imageFile = _imageUrl;
-        imageBytes = await imageFile!.readAsBytes();
+        imageBytes = imageFile as List<int>;
       } else {
         imageBytes = _imageBytes as List<int>;
       }
@@ -94,7 +101,7 @@ class _ImagePickerViewState extends State<ImagePickerView> {
         // print(
         //     "status: $status, similarity: $similarity, name: $name, full_path: $full_path");
         _imageBytes = base64Decode(full_path);
-        _image = File.fromRawPath(_imageBytes!);
+        _image = _imageBytes;
         setState(() {
           _imageUrl = null;
           _myName = name.toString();
@@ -130,7 +137,7 @@ class _ImagePickerViewState extends State<ImagePickerView> {
                   : Expanded(
                       child: kIsWeb
                           ? Image.memory(_imageBytes!)
-                          : Image.file(_image!),
+                          : Image.memory(_image!),
                     ),
           _imageUrl != null
               ? Padding(
